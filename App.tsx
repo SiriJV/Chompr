@@ -1,14 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Game from './src/components/Game';
+import "react-native-gesture-handler";
+import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SpotifyLogin from './src/SpotifyLogin';
 
-export default function App() {
+import * as AuthSession from 'expo-auth-session';
+
+
+const App = () => {
+  const redirectUri = AuthSession.makeRedirectUri();
+  console.log("Redirect URI:", redirectUri);
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <GestureHandlerRootView style={{ flex: 1}}>
+      <Game />
+      {/* <SpotifyLogin /> */}
+    </GestureHandlerRootView>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
