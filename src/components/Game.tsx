@@ -4,6 +4,9 @@ import { Coordinate, Direction, GestureEventType } from "../types/types";
 import React, { useEffect, useState } from "react";
 import Snake from "./Snake";
 import checkGameOver from "../utils/checkGameover";
+import checkFoodCollision from "../utils/checkFoodCollision";
+import getRandomFoodPosition from "../utils/getRandomFoodPosition";
+import Food from "./Food";
 
 const foodInitialPosition = { x: 5, y: 20};
 const moveInterval = 50;
@@ -56,12 +59,19 @@ const Game = () => {
             }
     
             if (checkGameOver(newHead, gameBounds)) {
-                console.log("Game Over!");
                 setIsGameOver(true);
                 return prevSnake;
             }
-    
-            return [newHead, ...prevSnake.slice(0, -1)];
+
+            let newSnake;
+            if (checkFoodCollision(newHead, food)) {
+                newSnake = [newHead, ...prevSnake];
+                setFood(getRandomFoodPosition(gameBounds, newSnake));
+            } else {
+                newSnake = [newHead, ...prevSnake.slice(0, -1)];
+            } 
+
+            return newSnake;
             });
         }, moveInterval);
     
@@ -84,6 +94,7 @@ const Game = () => {
             <SafeAreaView style={styles.container}>
                 <View style={styles.gameArea} onLayout={handleGameLayout}>
                     <Snake snake={snake}/>
+                    <Food position={food} cellSize={cellSize} />
                     {isGameOver && <View style={styles.gameOverOverlay} />}
                 </View>
             </SafeAreaView>
