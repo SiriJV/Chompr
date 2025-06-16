@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SpotifyLogin from './src/SpotifyLogin';
 
 import * as AuthSession from 'expo-auth-session';
+import NavBar from './src/components/NavBar';
 
 
 const App = () => {
@@ -15,9 +16,10 @@ const App = () => {
 
 
   return (
-    <GestureHandlerRootView style={{ flex: 1}}>
-      <Game />
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "black"}}>
+      {/* <Game /> */}
       {/* <SpotifyLogin /> */}
+      <NavBar />
     </GestureHandlerRootView>
   );
 }
