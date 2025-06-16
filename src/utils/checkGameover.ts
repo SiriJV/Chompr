@@ -1,15 +1,13 @@
 import { Coordinate } from "../types/types";
 
-const checkGameOver = (snakeHead: Coordinate, boundaries: any): boolean => {
-    console.log('checkGameOver called with:', snakeHead);
+const checkGameOver = (snakeHead: Coordinate, boundaries: { xMin: number; xMax: number; yMin: number; yMax: number }) => {
 
     return (
         snakeHead.x < boundaries.xMin ||
-        snakeHead.x > boundaries.XMax ||
-        snakeHead.y > boundaries.xMax ||
-        snakeHead.y < boundaries.XMin
-    )
-
+        snakeHead.x > boundaries.xMax ||
+        snakeHead.y < boundaries.yMin ||
+        snakeHead.y > boundaries.yMax
+    );
 }
 
 export default checkGameOver;

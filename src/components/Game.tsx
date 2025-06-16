@@ -1,43 +1,46 @@
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { LayoutChangeEvent, SafeAreaView, StyleSheet, View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { Coordinate, Direction, GestureEventType } from "../types/types";
 import React, { useEffect, useState } from "react";
 import Snake from "./Snake";
 import checkGameOver from "../utils/checkGameover";
 
-const snakeInitialPosition = [{ x: 5, y: 5}];
 const foodInitialPosition = { x: 5, y: 20};
-const gameBounds = { xMin: 0, xMax: 35, yMin: 0, yMax: 63 };
 const moveInterval = 50;
 const scoreIncrement = 10;
 
 const Game = () => {
     const [direction, setDirection] = useState<Direction>(Direction.Right);
-    const [snake, setSnake] = useState<Coordinate[]>(snakeInitialPosition);
+    const [snake, setSnake] = useState<Coordinate[]>([{ x: 5, y: 5 }]);
     const [food, setFood] = useState<Coordinate>(foodInitialPosition);
-    const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [isPaused, setIsPaused] = useState<boolean>(false);
+    const [isGameOver, setIsGameOver] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const [gameBounds, setGameBounds] = useState({ xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
+
+    const cellSize = 15;
+    const borderWidth = 4;
+
+    const handleGameLayout = (event: LayoutChangeEvent) => {
+        const { width, height } = event.nativeEvent.layout;
+
+        const xMax = Math.floor(width / cellSize) - 1;
+        const yMax = Math.floor(height / cellSize) - 1;
+
+        setGameBounds({ xMin: 0, xMax, yMin: 0, yMax });
+    };
 
     useEffect(() => {
-        if (!isGameOver) {
-            const intervalId = setInterval(() => {
-                !isPaused && moveSnake();
-            }, moveInterval)
-            return () => clearInterval(intervalId);
-        }
-    }, [snake, isGameOver, isPaused])
-
-    const moveSnake = () => {
-        const snakeHead = snake[0];
-        const newHead = { ...snakeHead } 
-        // game over
-
-        if(checkGameOver(snakeHead, gameBounds)) {
-            setIsGameOver((prev) => !prev);
-            return;
-        }
-
-        switch (direction) {
+        if (isGameOver) return;
+        if (gameBounds.xMax === 0 || gameBounds.yMax === 0) return;
+    
+        const intervalId = setInterval(() => {
+        if (isPaused) return;
+    
+        setSnake(prevSnake => {
+            const head = prevSnake[0];
+            let newHead = { ...head };
+    
+            switch (direction) {
             case Direction.Up:
                 newHead.y -= 1;
                 break;
@@ -50,41 +53,38 @@ const Game = () => {
             case Direction.Right:
                 newHead.x += 1;
                 break;
-            default:
-                break;
-        }
-
-        // if eat food
-        // grow snake
-
-        setSnake([newHead, ...snake.slice(0, -1)]);
-    }
+            }
+    
+            if (checkGameOver(newHead, gameBounds)) {
+                console.log("Game Over!");
+                setIsGameOver(true);
+                return prevSnake;
+            }
+    
+            return [newHead, ...prevSnake.slice(0, -1)];
+            });
+        }, moveInterval);
+    
+    return () => clearInterval(intervalId);
+    }, [direction, isPaused, isGameOver, gameBounds]);
 
     const handleGesture = (event: GestureEventType) => {
         const { translationX, translationY } = event.nativeEvent;
-        console.log(translationX, translationY);
-
-        if (Math.abs(translationX) > Math.abs(translationY)) {
-            if (translationX > 0) {
-                setDirection(Direction.Right);
-            } else {
-                setDirection(Direction.Left);
-            }
-        } else {
-            if (translationY > 0) {
-                setDirection(Direction.Down);
-            } else {
-                setDirection(Direction.Up);
-            }
-        }
-    }
     
+        if (Math.abs(translationX) > Math.abs(translationY)) {
+            setDirection(translationX > 0 ? Direction.Right : Direction.Left);
+        } else {
+            setDirection(translationY > 0 ? Direction.Down : Direction.Up);
+        }
+    };
+
     return (
         <>
         <PanGestureHandler onGestureEvent={handleGesture}>
             <SafeAreaView style={styles.container}>
-                <View style={styles.boundaries}>
+                <View style={styles.gameArea} onLayout={handleGameLayout}>
                     <Snake snake={snake}/>
+                    {isGameOver && <View style={styles.gameOverOverlay} />}
                 </View>
             </SafeAreaView>
         </PanGestureHandler>
@@ -92,19 +92,23 @@ const Game = () => {
     )
 }
 
-export default Game
+export default Game;
 
 const styles = StyleSheet.create({
+  gameArea: {
+    flex: 1,
+    margin: 20,
+    borderWidth: 4,
+    borderColor: "white",
+    position: "relative",
+    backgroundColor: "red",
+  },
   container: {
     flex: 1,
-    backgroundColor: 'red',
-  },
-  boundaries: {
-    flex: 1,
-    borderColor: "red",
-    borderWidth: 12,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
     backgroundColor: "purple",
-  }
+  },
+  gameOverOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
 });
