@@ -27,7 +27,7 @@ export default Snake;
 
 const styles = StyleSheet.create({
     snake: {
-        backgroundColor: "blue",
+        backgroundColor: "black",
         position: "absolute",
     }
 });
