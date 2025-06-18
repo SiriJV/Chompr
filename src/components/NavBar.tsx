@@ -43,12 +43,13 @@ const screenOptions = ({ route }: { route: { name: string } }) => ({
   
   const styles = StyleSheet.create({
     tabBar: {
-      backgroundColor: "black",
-      borderTopWidth: 0,
+      backgroundColor: "#121212",
+      borderTopWidth: 1,
+      borderColor: "#1F1F1F",
       paddingBottom: 5,
       paddingTop: 10,
       height: 60,
-      marginBottom: 40,
+      marginBottom: 50,
     },
   });
   
