@@ -51,6 +51,6 @@ const screenOptions = ({ route }: { route: { name: string } }) => ({
       height: 60,
       marginBottom: 50,
     },
-  });
+});
   
-  export default Navbar;
+export default Navbar;

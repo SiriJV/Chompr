@@ -10,15 +10,15 @@ type SnakeProps = {
 const Snake = ({snake}: SnakeProps) => {
     return (
         <>
-        {snake.map((segment: Coordinate, index: number) => {
-            const segmentStyle = {
-                left: segment.x * cellSize,
-                top: segment.y * cellSize,
-                width: cellSize,
-                height: cellSize,
-            }
-            return <View key={index} style={[styles.snake, segmentStyle]}/>
-        })}
+            {snake.map((segment: Coordinate, index: number) => {
+                const segmentStyle = {
+                    left: segment.x * cellSize,
+                    top: segment.y * cellSize,
+                    width: cellSize,
+                    height: cellSize,
+                }
+                return <View key={index} style={[styles.snake, segmentStyle]}/>
+            })}
         </>
     )
 }
