@@ -76,8 +76,8 @@ const Suggestions = ({ token, onSelectItem }: { token: string | null; onSelectIt
                 { title: 'Recently Played Albums', data: recentAlbums },
                 { title: 'New Releases', data: newAlbums },
             ]);
-        } catch (err) {
-            console.error('Error fetching default content:', err);
+        } catch (error) {
+            console.error('Error fetching default content:', error);
         } finally {
             setLoading(false);
         }
