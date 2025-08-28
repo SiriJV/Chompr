@@ -17,7 +17,7 @@ Play through Spotify playlists or albums, where each track becomes food for your
 ## Techstack
 
 - React Native with TypeScript
-- React Router for navigation
+- React Navigation w/ bottom tabs for navigation
 - Spotify Web API for fetching playlist and album data
 
 ---
@@ -37,8 +37,9 @@ This app uses the [Spotify Web APIs](https://developer.spotify.com/documentation
    `npm install`
 
 3. Run the app  
-   `npx react-native run-ios   # for iOS simulator`
-   `npx react-native run-android  # for Android emulator`
+   `npx react-native run-ios` for iOS simulator
+   `npx react-native run-android` for Android emulator
+   
    Or, if you're using expo:
    `npx expo start`
    
